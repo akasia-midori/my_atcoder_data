@@ -273,13 +273,6 @@ class AVLtree:
         if value in self.dict:
             return True
         return False
-        # now = self.tree.l
-        # while now.h != 0:
-        #     if now.value > value: now = now.l
-        #     elif now.value < value: now = now.r
-        #     else: return True
-        # return False
-
 
     def max(self):
         now = self.tree.l
@@ -304,9 +297,6 @@ class AVLtree:
         else: p.r = v
         v.p = p
 
-    # def __modHeight__(self, u):
-    #     u.h = 1 + max(u.l.h, u.r.h)
-
     def __rotateR__(self, u):
         v = u.l
         self.__replace__(u, v)
@@ -314,8 +304,6 @@ class AVLtree:
         v.r.p = u
         v.r = u
         u.p = v
-        # self.__modHeight__(v.r)
-        # self.__modHeight__(v)
         v.r.h = 1 + max(v.r.l.h, v.r.r.h)
         v.h = 1 + max(v.l.h, v.r.h)
         return v
@@ -328,8 +316,6 @@ class AVLtree:
         u.l.p = v
         u.l = v
         v.p = u
-        # self.__modHeight__(u.l)
-        # self.__modHeight__(u)
         u.l.h = 1 + max(u.l.l.h, u.l.r.h)
         u.h = 1 + max(u.l.h, u.r.h)
         return u
@@ -355,19 +341,19 @@ class AVLtree:
                         u = self.__rotateR__(u)
                     else:
                         u = self.__rotateLR__(u)
-                else: u.h = 1 + max(u.l.h, u.r.h) #self.__modHeight__(u)
+                else: u.h = 1 + max(u.l.h, u.r.h)
             else:
                 if (self.__bias__(u) == -2):
                     if (self.__bias__(u.r) <= 0):
                         u = self.__rotateL__(u)
                     else:
                         u = self.__rotateRL__(u)
-                else: u.h = 1 + max(u.l.h, u.r.h)#self.__modHeight__(u)
+                else: u.h = 1 + max(u.l.h, u.r.h)
             if h == u.h:
                 break
-            t = u
-                
-    
+            t = u              
+
+
 def solve2(query):
     sets = AVLtree()
     out = []
