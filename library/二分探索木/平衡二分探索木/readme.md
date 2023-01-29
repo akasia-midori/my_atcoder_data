@@ -66,3 +66,76 @@ AVL木で番兵を追加しているので、「子ノードがない時」は�
 
 <br></br>
 
+#### 実験memo
+下記コードにて生のpythonとpypyで実行時間の比較を行った
+python  
+シーケンシャルアクセス:0.9374985694885254  
+ランダムアクセス:4.039090156555176  
+木ノードを参照:1.673384428024292  
+  
+<br></br>
+pypy(atcoder環境 7.3.0)  
+シーケンシャルアクセス:0.021963834762573242  
+ランダムアクセス:0.05605173110961914  
+木ノードを参照:0.1224982738494873
+  
+  
+pypy環境では木ノードを再帰的に参照するよりランダムアクセスの方が速いらしい.
+ノードの作り方を工夫したら定数倍速くなるのでは？
+```python
+class LEAF:
+    def __init__(self):
+        self.l = None
+        self.r = None
+        self.p = None
+        self.value = None
+        self.h = 0
+        
+class Node:
+    def __init__(self, value, leaf, p=None):
+        self.l = LEAF()
+        self.r = LEAF()
+        self.p = p # 親
+        self.value = value
+        self.h = 1
+N = 10**6
+ls = LEAF()
+tree = Node(0, ls)
+now = tree
+for i in range(1, N):
+    now.r = Node(i, ls)
+    now = now.r
+
+from time import time
+lists = [i for i in range(N)]
+
+start = time()
+for _ in range(10):
+    sums = 0
+    for i in range(N):
+        sums += lists[i]
+print(time()-start)
+import random 
+seni = [i for i in range(N)]
+random.shuffle(seni)
+
+start = time()
+for _ in range(10):
+    sums = 0
+    
+    for i in seni:
+        sums += lists[i]
+print(time()-start)
+import random 
+seni = [i for i in range(N)]
+random.shuffle(seni)
+
+start = time()
+for _ in range(10):
+    sums = 0
+    now = tree
+    while now.value is not None:
+        sums += now.value
+        now = now.r
+print(time()-start)
+```
