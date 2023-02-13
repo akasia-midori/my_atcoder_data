@@ -19,7 +19,7 @@
 
 ## 用途
 データが逐次追加されるような状況で二分探索が必要な時。  
-SortedSetと同じぐらい速かったよ。
+値が制限されるとき、SortedSetと同じぐらい速かったよ。
 
 <br></br>
 
@@ -55,7 +55,7 @@ AVL木で番兵を追加しているので、「子ノードがない時」は�
 辿り着いたノードと削除ノードを取り替える。  
 ※1つ左に遷移した後辿れるだけ右に遷移したものと取り替えても別に問題ない。  
 念のため、削除パターンを画像で列挙する
-![delete_pattern](./AVL木/image/delete_pattern.png)
+![delete_pattern](./image/delete_pattern.png)
 
 
 削除後、削除したノードを含む木のバランスが崩れる可能性があるため、チェックし崩れていたら回転でバランスを整える
@@ -81,7 +81,11 @@ pypy(atcoder環境 7.3.0)
   
   
 pypy環境では木ノードを再帰的に参照するよりランダムアクセスの方が速いらしい.
-ノードの作り方を工夫したら定数倍速くなるのでは？
+ノードの作り方を工夫したら定数倍速くなるのでは？  
+「部分木のインデックスを持たせたリスト」と「ノードに持つ値を格納したリスト」を持つみたいな実装をしたら地獄みたいに遅くなった(pypyで木を辿る時の3倍)
+pythonだとランダムアクセスと同じぐらい  
+なんでこんなことがおこるんだろう…whileで回すしてるので毎回if文が回ってるから？
+
 ```python
 class LEAF:
     def __init__(self):
@@ -137,5 +141,35 @@ for _ in range(10):
     while now.value is not None:
         sums += now.value
         now = now.r
+print(time()-start)
+
+import random 
+seni = [i for i in range(N)]
+random.shuffle(seni)
+
+lists = seni[:]
+dicts = {}
+ind = [i for i in range(N)]
+
+for r,d in zip(lists, ind):
+    dicts[r] = d
+
+INF = 10**9
+inds = []
+for i in lists:
+    if i+1 == N:
+        inds.append(INF)
+    else:
+        inds.append(dicts[i+1])
+
+
+start_ind = lists.index(0)
+start = time()
+for _ in range(10):
+    sums = 0
+    ind = start_ind
+    while ind != INF:
+        sums += lists[ind]
+        ind = inds[ind]
 print(time()-start)
 ```
