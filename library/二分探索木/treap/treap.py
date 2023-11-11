@@ -1,3 +1,21 @@
+class LEAF:
+    def __init__(self):
+        self.l = None
+        self.r = None
+        self.p = None
+        self.priority = None
+        self.value = None
+
+class Node:
+    def __init__(self, value, leaf, priority, p=None):
+        self.l = leaf
+        self.r = leaf
+        self.p = p # 親
+        self.priority = priority # 乱数
+        self.value = value
+import random
+random.seed(42)
+
 class Treap:
     def __init__(self):
         self.INF = float("inf")
