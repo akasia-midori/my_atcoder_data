@@ -116,3 +116,109 @@ def searchK(t, k):
         
 
     return index
+
+def solve(A, Qs):
+    tree = insert(None, 0, A[0])
+    for i, a in enumerate(A[1:], start=1):
+        tree = insert(tree, i, a)
+    out = []
+
+    for raw in Qs:
+        # insert
+        if raw[0] == 1:
+            _, index, value = raw
+            tree = insert(tree, index, value)
+
+        elif raw[0] == 2:
+            _, index = raw
+            tree = erase(tree, index)
+
+        else:
+            _, k = raw
+            out.append(searchK(tree, k))
+    return out
+
+def naive(A, Qs):
+    tree = A[:]
+    out = []
+
+    for raw in Qs:
+        # insert
+        if raw[0] == 1:
+            _, index, value = raw
+            tree.insert(index, value)
+
+        elif raw[0] == 2:
+            _, index = raw
+            tree.pop(index)
+
+        else:
+            _, k = raw
+            sums = 0
+            i=0
+            for i,t in enumerate(tree):
+                sums += t
+                if sums >= k:
+                    break
+            
+            if sum(tree) < k:
+                out.append(None)
+            else:
+                out.append(i)
+    return out
+
+
+
+
+
+    
+import random 
+
+for i in range(10000):
+    N = random.randint(2, 5)
+    Q = random.randint(1, 5)
+    sets = set([])
+    A = [random.randint(0, 1) for _ in range(N)]
+    sim = A[:]
+    Qs = []
+
+    try:
+        for _ in range(Q):
+            cases = random.randint(1,3)
+            temp = [cases]
+            
+            # insert
+            if cases==1:
+                t = random.randint(0, len(sim)-1)
+                v = random.randint(0, 1)
+                temp.append(t)
+                temp.append(v)
+                Qs.append(temp)
+
+                sim.insert(t, v)
+
+            # delete
+            elif cases==2:
+                t = random.randint(0, len(sim)-1)
+                temp.append(t)
+                Qs.append(temp)
+                sim.pop(t)
+
+            # k番目の1のindexを探す
+            else:
+                temp.append(random.randint(0, sum(A)))
+                Qs.append(temp)
+    except:
+        continue
+
+
+    no = naive(A[:], Qs)
+    so = solve(A[:], Qs)
+    flg = False
+    for n, s in zip(no, so):
+        if n!=s:
+            flg = True
+            print(N, no, so)
+            break
+    if flg:
+        break
